@@ -144,7 +144,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 
 	// add grantees list
 	// ----------------------------------------------
-	// Given the file is uploaded to the node (fileHis)
+	// Given the file is uploaded to the node (file.HistoryAddress())
 	// When the grantees are added to the file
 	// Then the grantees are added successfully
 	gFile := bee.NewBufferFile("grantees.json", bytes.NewBuffer([]byte(`{ "grantees": [
