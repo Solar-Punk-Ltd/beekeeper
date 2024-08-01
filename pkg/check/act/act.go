@@ -262,6 +262,9 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	if len(patchAddresses) != 1 {
 		return fmt.Errorf("node %s: GetActGrantees after patch: addresses length is not 1", upNodeName)
 	}
+	if patchAddresses[0] != pubk1.String() {
+		return fmt.Errorf("node %s: GetActGrantees after patch: addresses is not equal to grantee1", upNodeName)
+	}
 	c.logger.Info("ACT grantees listed after patch")
 	time.Sleep(5 * time.Second)
 
