@@ -309,9 +309,8 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	// Given the grantee is patched
 	// When the file is downloaded from the node with the grantee1
 	// Then the file is downloaded successfully
-
-	hh := gFile.HistroryAddress()
-	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hh})
+	hPatchG1 := pFile.HistroryAddress()
+	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatchG1})
 	if errAfterPatchG != nil {
 		return fmt.Errorf("node %s: %w", nodeName1, errAfterPatchG)
 	}
