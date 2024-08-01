@@ -302,6 +302,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the publisher after patch")
+	time.Sleep(25 * time.Second)
 
 	// download act file with the added grantee1 after patch grantees
 	// ----------------------------------------------
@@ -313,7 +314,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: %w", nodeName1, errAfterPatchG)
 	}
 	if !bytes.Equal(file.Hash(), hashAfterPatchG) {
-		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", nodeName3, file.Size(), sizeAfterPatchG, fileAddress.String())
+		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", nodeName1, file.Size(), sizeAfterPatchG, fileAddress.String())
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the added grantee1 after patch")
