@@ -313,7 +313,8 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	// When the file is downloaded from the node with the grantee1
 	// Then the file is downloaded successfully
 	hPatchG1 := pFile.HistroryAddress()
-	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatchG1})
+	ts := uint64(time.Now().Unix())
+	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActTimestamp: &ts, ActHistoryAddress: &hPatchG1})
 	if errAfterPatchG != nil {
 		return fmt.Errorf("node %s: %w", nodeName1, errAfterPatchG)
 	}
