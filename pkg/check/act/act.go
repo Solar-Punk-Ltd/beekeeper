@@ -244,7 +244,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	if pErr != nil {
 		return fmt.Errorf("node %s: PatchActGrantees: %w", upNodeName, pErr)
 	}
-	c.logger.Info("ACT grantees patched add:grantee1, revoke: grantee2, grantee3")
+	c.logger.Info("ACT grantees patched add: grantee1, revoke: grantee2, grantee3")
 	time.Sleep(5 * time.Second)
 
 	// list grantees after patch
@@ -312,7 +312,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	// Given the grantee is patched
 	// When the file is downloaded from the node with the grantee1
 	// Then the file is downloaded successfully
-	hPatchG1 := pFile.HistroryAddress()
+	hPatchG1 := gFile.HistroryAddress()
 	ts := uint64(time.Now().Unix())
 	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActTimestamp: &ts, ActHistoryAddress: &hPatchG1})
 	if errAfterPatchG != nil {
