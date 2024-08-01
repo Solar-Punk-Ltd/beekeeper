@@ -305,16 +305,14 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the publisher after patch")
-	time.Sleep(25 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	// download act file with the added grantee1 after patch grantees
 	// ----------------------------------------------
 	// Given the grantee is patched
 	// When the file is downloaded from the node with the grantee1
 	// Then the file is downloaded successfully
-	hPatchG1 := gFile.HistroryAddress()
-	ts := uint64(time.Now().Unix())
-	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActTimestamp: &ts, ActHistoryAddress: &hPatchG1})
+	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
 	if errAfterPatchG != nil {
 		return fmt.Errorf("node %s: %w", nodeName1, errAfterPatchG)
 	}
