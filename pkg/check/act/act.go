@@ -157,7 +157,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	if err != nil {
 		return fmt.Errorf("node %s: add grantees error: %w", upNodeName, err)
 	}
-	c.logger.Info("ACT grantees added")
+	c.logger.Info("ACT grantees added (grantee2, grantee3)")
 	time.Sleep(10 * time.Second)
 
 	// list grantees
@@ -194,21 +194,36 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	}
 	c.logger.Info("ACT file downloaded with the publisher")
 
-	// download act file with the grantee
+	// download act file with the grantee2
 	// ----------------------------------------------
-	// Given the grantee is added to the file
-	// When the file is downloaded from the node with the grantee
+	// Given the grantee2 is added to the file
+	// When the file is downloaded from the node with the grantee2
 	// Then the file is downloaded successfully
 	his := gFile.HistroryAddress()
-	size1, hash1, err1 := client2.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &his})
-	if err1 != nil {
-		return fmt.Errorf("node %s: %w", nodeName2, err1)
+	sizeG2, hashG2, errG2 := client2.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &his})
+	if errG2 != nil {
+		return fmt.Errorf("node %s: %w", nodeName2, errG2)
 	}
-	if !bytes.Equal(file.Hash(), hash1) {
-		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", nodeName2, file.Size(), size1, fileAddress.String())
+	if !bytes.Equal(file.Hash(), hashG2) {
+		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", nodeName2, file.Size(), sizeG2, fileAddress.String())
 		return errors.New("ACT file retrieval - hash error")
 	}
-	c.logger.Info("ACT file downloaded with the grantee")
+	c.logger.Info("ACT file downloaded with the grantee2")
+
+	// download act file with the grantee3
+	// ----------------------------------------------
+	// Given the grantee3 is added to the file
+	// When the file is downloaded from the node with the grantee3
+	// Then the file is downloaded successfully
+	sizeG3, hashG3, errG3 := client3.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &his})
+	if errG3 != nil {
+		return fmt.Errorf("node %s: %w", nodeName3, errG3)
+	}
+	if !bytes.Equal(file.Hash(), hashG3) {
+		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", nodeName3, file.Size(), sizeG3, fileAddress.String())
+		return errors.New("ACT file retrieval - hash error")
+	}
+	c.logger.Info("ACT file downloaded with the grantee3")
 
 	// patch grantees
 	// ----------------------------------------------
@@ -229,7 +244,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	if pErr != nil {
 		return fmt.Errorf("node %s: PatchActGrantees: %w", upNodeName, pErr)
 	}
-	c.logger.Info("ACT grantees patched")
+	c.logger.Info("ACT grantees patched add:grantee1, revoke: grantee2, grantee3")
 	time.Sleep(5 * time.Second)
 
 	// list grantees after patch
@@ -250,16 +265,57 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	c.logger.Info("ACT grantees listed after patch")
 	time.Sleep(5 * time.Second)
 
-	// download act file with the not enabled grantee after patch
+	// download act file with the not enabled grantee2 after patch
 	//----------------------------------------------
 	// Given the grantee is patched
-	// When the file is downloaded from the node with the not enabled grantee
+	// When the file is downloaded from the node with the not enabled grantee2
 	// Then the file download is denied
-	hG := pFile.HistroryAddress()
-	_, _, notGErr := client2.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hG})
-	if notGErr == nil {
+	hPatch := pFile.HistroryAddress()
+	_, _, notG2Err := client2.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
+	if notG2Err == nil {
 		return fmt.Errorf("node %s: File downloaded with wrong public key successfully - this is an error", nodeName2)
 	}
-	c.logger.Info("ACT Access denied for not enabled grantee after patch")
+	c.logger.Info("ACT Access denied for not enabled grantee2 after patch")
+
+	// download act file with the not enabled grantee3 after patch
+	//----------------------------------------------
+	// Given the grantee is patched
+	// When the file is downloaded from the node with the not enabled grantee3
+	// Then the file download is denied
+	_, _, notG3Err := client3.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
+	if notG3Err == nil {
+		return fmt.Errorf("node %s: File downloaded with wrong public key successfully - this is an error", nodeName3)
+	}
+	c.logger.Info("ACT Access denied for not enabled grantee3 after patch")
+
+	// download act file with the publisher after patch grantees
+	// ----------------------------------------------
+	// Given the grantee is patched
+	// When the file is downloaded from the node with the publisher
+	// Then the file is downloaded successfully
+	sizeAfterPatch, hashAfterPatch, errAfterPatch := upClient.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
+	if errAfterPatch != nil {
+		return fmt.Errorf("node %s: %w", upNodeName, errAfterPatch)
+	}
+	if !bytes.Equal(file.Hash(), hashAfterPatch) {
+		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", upNodeName, file.Size(), sizeAfterPatch, fileAddress.String())
+		return errors.New("ACT file retrieval - hash error")
+	}
+	c.logger.Info("ACT file downloaded with the publisher after patch")
+
+	// download act file with the added grantee1 after patch grantees
+	// ----------------------------------------------
+	// Given the grantee is patched
+	// When the file is downloaded from the node with the grantee1
+	// Then the file is downloaded successfully
+	sizeAfterPatchG, hashAfterPatchG, errAfterPatchG := client1.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
+	if errAfterPatchG != nil {
+		return fmt.Errorf("node %s: %w", nodeName1, errAfterPatchG)
+	}
+	if !bytes.Equal(file.Hash(), hashAfterPatchG) {
+		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", nodeName3, file.Size(), sizeAfterPatchG, fileAddress.String())
+		return errors.New("ACT file retrieval - hash error")
+	}
+	c.logger.Info("ACT file downloaded with the added grantee1 after patch")
 	return
 }
