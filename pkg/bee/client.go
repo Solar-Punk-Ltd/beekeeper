@@ -781,15 +781,13 @@ func (c *Client) UploadActFile(ctx context.Context, f *File, o api.UploadOptions
 }
 
 func (c *Client) AddActGrantees(ctx context.Context, f *File, o api.UploadOptions) (err error) {
-	h := fileHasher()
-	r, err := c.api.Act.AddGrantees(ctx, io.TeeReader(f.DataReader(), h), o)
+	r, err := c.api.Act.AddGrantees(ctx, f.DataReader(), o)
 	if err != nil {
 		return fmt.Errorf("add ACT grantees: %w", err)
 	}
 
 	f.SetAddress(r.Reference)
 	f.SetHistroryAddress(r.HistoryAddress)
-	f.SetHash(h.Sum(nil))
 
 	return nil
 }

@@ -45,6 +45,7 @@ func (a *ActService) AddGrantees(ctx context.Context, data io.Reader, o UploadOp
 	h := http.Header{}
 	h.Add(postageStampBatchHeader, o.BatchID)
 	h.Add(swarmActHistoryAddress, o.ActHistoryAddress.String())
+	h.Add(deferredUploadHeader, "false")
 	err := a.client.requestWithHeader(ctx, http.MethodPost, "/"+apiVersion+"/grantee", h, data, &resp)
 	return resp, err
 }
@@ -58,6 +59,7 @@ func (a *ActService) PatchGrantees(ctx context.Context, data io.Reader, addr swa
 	h := http.Header{}
 	h.Add("swarm-postage-batch-id", batchID)
 	h.Add("swarm-act-history-address", haddr.String())
+	h.Add(deferredUploadHeader, "false")
 	err := a.client.requestWithHeader(ctx, http.MethodPatch, "/"+apiVersion+"/grantee/"+addr.String(), h, data, &resp)
 	return resp, err
 }
