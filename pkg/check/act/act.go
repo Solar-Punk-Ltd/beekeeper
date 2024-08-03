@@ -176,7 +176,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: GetActGrantees: addresses length is not 2", upNodeName)
 	}
 	c.logger.Info("ACT grantees listed")
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	// download act file with the publisher after create grantees
 	// ----------------------------------------------
@@ -193,6 +193,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the publisher")
+	time.Sleep(10 * time.Second)
 
 	// download act file with the grantee2
 	// ----------------------------------------------
@@ -209,6 +210,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the grantee2")
+	time.Sleep(10 * time.Second)
 
 	// download act file with the grantee3
 	// ----------------------------------------------
@@ -224,6 +226,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the grantee3")
+	time.Sleep(10 * time.Second)
 
 	// patch grantees
 	// ----------------------------------------------
@@ -245,7 +248,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: PatchActGrantees: %w", upNodeName, pErr)
 	}
 	c.logger.Info("ACT grantees patched add: grantee1, revoke: grantee2, grantee3")
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	// list grantees after patch
 	// ----------------------------------------------
@@ -266,7 +269,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: GetActGrantees after patch: addresses is not equal to grantee1", upNodeName)
 	}
 	c.logger.Info("ACT grantees listed after patch")
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	// download act file with the not enabled grantee2 after patch
 	//----------------------------------------------
@@ -279,6 +282,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: File downloaded with wrong public key successfully - this is an error", nodeName2)
 	}
 	c.logger.Info("ACT Access denied for not enabled grantee2 after patch")
+	time.Sleep(10 * time.Second)
 
 	// download act file with the not enabled grantee3 after patch
 	//----------------------------------------------
@@ -290,6 +294,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: File downloaded with wrong public key successfully - this is an error", nodeName3)
 	}
 	c.logger.Info("ACT Access denied for not enabled grantee3 after patch")
+	time.Sleep(10 * time.Second)
 
 	// download act file with the publisher after patch grantees
 	// ----------------------------------------------
@@ -305,7 +310,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return errors.New("ACT file retrieval - hash error")
 	}
 	c.logger.Info("ACT file downloaded with the publisher after patch")
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	// download act file with the added grantee1 after patch grantees
 	// ----------------------------------------------
