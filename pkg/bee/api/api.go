@@ -222,6 +222,10 @@ func (c *Client) requestData(ctx context.Context, method, path string, body io.R
 
 // requestWithHeader handles the HTTP request response cycle.
 func (c *Client) requestWithHeader(ctx context.Context, method, path string, header http.Header, body io.Reader, v interface{}, headerParser ...func(http.Header)) (err error) {
+	if method == http.MethodPatch {
+		fmt.Printf("patch request: %s\n", path)
+		fmt.Printf("patch request header: %+v\n", header)
+	}
 	req, err := http.NewRequest(method, path, body)
 	if err != nil {
 		return err
@@ -238,7 +242,13 @@ func (c *Client) requestWithHeader(ctx context.Context, method, path string, hea
 
 	if v != nil && strings.Contains(r.Header.Get("Content-Type"), "application/json") {
 		_ = json.NewDecoder(r.Body).Decode(&v)
+		if method == http.MethodPatch {
+			fmt.Printf("patch response: %+v\n", v)
+		}
 		for _, parser := range headerParser {
+			if method == http.MethodPatch {
+				fmt.Printf("patch response header: %+v\n", r.Header)
+			}
 			parser(r.Header)
 		}
 		return err
