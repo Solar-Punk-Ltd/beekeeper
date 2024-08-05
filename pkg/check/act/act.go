@@ -68,12 +68,12 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	fullNodes := cluster.FullNodeNames()
 	lightNodes := cluster.LightNodeNames()
 
-	upNodeName := lightNodes[0]
+	upNodeName := fullNodes[0]
 	upClient := clients[upNodeName]
 	addr, _ := upClient.Addresses(ctx)
 	publisher, _ := swarm.ParseHexAddress(addr.PublicKey)
 
-	nodeName1 := fullNodes[0]
+	nodeName1 := lightNodes[0]
 	client1 := clients[nodeName1]
 	addr1, _ := client1.Addresses(ctx)
 	pubk1, _ := swarm.ParseHexAddress(addr1.PublicKey)
