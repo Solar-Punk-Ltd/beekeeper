@@ -295,13 +295,14 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	}
 	c.logger.Info("ACT Access denied for not enabled grantee3 after patch")
 	time.Sleep(10 * time.Second)
+	ts := uint64(time.Now().Unix())
 
 	// download act file with the publisher after patch grantees
 	// ----------------------------------------------
 	// Given the grantee is patched
 	// When the file is downloaded from the node with the publisher
 	// Then the file is downloaded successfully
-	sizeAfterPatch, hashAfterPatch, errAfterPatch := upClient.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
+	sizeAfterPatch, hashAfterPatch, errAfterPatch := upClient.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch, ActTimestamp: &ts})
 	if errAfterPatch != nil {
 		return fmt.Errorf("node %s: %w", upNodeName, errAfterPatch)
 	}
