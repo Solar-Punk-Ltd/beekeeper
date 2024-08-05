@@ -60,6 +60,10 @@ func (a *ActService) PatchGrantees(ctx context.Context, data io.Reader, addr swa
 	h.Add("swarm-postage-batch-id", batchID)
 	h.Add("swarm-act-history-address", haddr.String())
 	h.Add(deferredUploadHeader, "false")
-	err := a.client.requestWithHeader(ctx, http.MethodPatch, "/"+apiVersion+"/grantee/"+addr.String(), h, data, &resp)
+	postpath := ""
+	if !addr.IsEmpty() {
+		postpath = addr.String()
+	}
+	err := a.client.requestWithHeader(ctx, http.MethodPatch, "/"+apiVersion+"/grantee/"+postpath, h, data, &resp)
 	return resp, err
 }
