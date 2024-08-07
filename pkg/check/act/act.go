@@ -244,14 +244,12 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 					]
 				}`)))
 
-	//pErr := upClient.PatchActGrantees(ctx, &pFile, gFile.Address(), gFile.HistroryAddress(), batchID)
-	pErr := upClient.PatchActGrantees(ctx, &pFile, swarm.EmptyAddress, history, batchID)
-
+	pErr := upClient.PatchActGrantees(ctx, &pFile, gFile.Address(), gFile.HistroryAddress(), batchID)
 	if pErr != nil {
 		return fmt.Errorf("node %s: PatchActGrantees: %w", upNodeName, pErr)
 	}
 	c.logger.Info("ACT grantees patched add: grantee1, revoke: grantee2, grantee3")
-	time.Sleep(10 * time.Second)
+	time.Sleep(10 * time.Minute)
 
 	// list grantees after patch
 	// ----------------------------------------------
@@ -272,7 +270,7 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 		return fmt.Errorf("node %s: GetActGrantees after patch: addresses is not equal to grantee1", upNodeName)
 	}
 	c.logger.Info("ACT grantees listed after patch")
-	time.Sleep(5 * time.Minute)
+	time.Sleep(5 * time.Second)
 
 	// download act file with the not enabled grantee2 after patch
 	//----------------------------------------------
