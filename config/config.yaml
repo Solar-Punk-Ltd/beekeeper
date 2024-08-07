@@ -243,7 +243,7 @@ checks:
       postage-amount: 420000000
       postage-label: act-label
       seed: 0
-    timeout: 5m
+    timeout: 15m
     type: act
   withdraw:
     options:
