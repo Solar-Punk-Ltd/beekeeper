@@ -298,23 +298,23 @@ func (c *Check) Run(ctx context.Context, cluster orchestration.Cluster, opts int
 	}
 	c.logger.Info("ACT Access denied for not enabled grantee3 after patch")
 	time.Sleep(10 * time.Second)
-	/*
-		// download act file with the publisher after patch grantees
-		// ----------------------------------------------
-		// Given the grantee is patched
-		// When the file is downloaded from the node with the publisher
-		// Then the file is downloaded successfully
-		sizeAfterPatch, hashAfterPatch, errAfterPatch := upClient.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
-		if errAfterPatch != nil {
-			return fmt.Errorf("node %s: %w", upNodeName, errAfterPatch)
-		}
-		if !bytes.Equal(file.Hash(), hashAfterPatch) {
-			c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", upNodeName, file.Size(), sizeAfterPatch, fileAddress.String())
-			return errors.New("ACT file retrieval - hash error")
-		}
-		c.logger.Info("ACT file downloaded with the publisher after patch")
-		time.Sleep(10 * time.Second)
-	*/
+
+	// download act file with the publisher after patch grantees
+	// ----------------------------------------------
+	// Given the grantee is patched
+	// When the file is downloaded from the node with the publisher
+	// Then the file is downloaded successfully
+	sizeAfterPatch, hashAfterPatch, errAfterPatch := upClient.DownloadActFile(ctx, fileAddress, &api.DownloadOptions{Act: &act, ActPublicKey: &publisher, ActHistoryAddress: &hPatch})
+	if errAfterPatch != nil {
+		return fmt.Errorf("node %s: %w", upNodeName, errAfterPatch)
+	}
+	if !bytes.Equal(file.Hash(), hashAfterPatch) {
+		c.logger.Infof("Node %s. ACT file hash not equal. Uploaded size: %d Downloaded size: %d  File: %s", upNodeName, file.Size(), sizeAfterPatch, fileAddress.String())
+		return errors.New("ACT file retrieval - hash error")
+	}
+	c.logger.Info("ACT file downloaded with the publisher after patch")
+	time.Sleep(10 * time.Second)
+
 	// download act file with the added grantee1 after patch grantees
 	// ----------------------------------------------
 	// Given the grantee is patched

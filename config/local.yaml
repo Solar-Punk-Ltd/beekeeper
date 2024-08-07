@@ -221,7 +221,7 @@ checks:
       postage-amount: 420000000
       postage-label: act-label
       seed: 0
-    timeout: 15m
+    timeout: 25m
     type: act
   ci-full-connectivity:
     timeout: 5m
